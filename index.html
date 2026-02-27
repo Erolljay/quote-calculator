@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookkeeping & Tax Compliance Quote Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Radio Card Logic */
+        .radio-card input:checked + .card-content {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+            ring: 2px;
+            ring-color: #2563eb;
+        }
+
+        .radio-card input:focus + .card-content {
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+
+        .required-indicator::after {
+            content: '*';
+            color: #ef4444;
+            margin-left: 0.25rem;
+        }
+
+        #quoteResult {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen py-12 px-4">
+
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+                Bookkeeping & <span class="text-blue-600">Tax Compliance</span>
+            </h1>
+            <p class="mt-3 text-lg text-slate-600">Get an instant monthly estimate for your business needs.</p>
+        </div>
+
+        <form id="quoteForm" class="bg-white shadow-xl shadow-blue-100/50 rounded-3xl p-6 md:p-10 border border-slate-100">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Client Type -->
+                <div class="space-y-3">
+                    <label class="text-sm font-bold text-slate-700 uppercase tracking-wider">Client Type</label>
+                    <div class="grid grid-cols-1 gap-3">
+                        <label class="radio-card cursor-pointer">
+                            <input type="radio" name="clientType" value="individual" data-label="Individual" class="hidden" checked>
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl flex items-center justify-between hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700">Individual</span>
+                                <div class="w-4 h-4 rounded-full border border-slate-300 bg-white"></div>
+                            </div>
+                        </label>
+                        <label class="radio-card cursor-pointer">
+                            <input type="radio" name="clientType" value="non-individual" data-label="Non-Individual" class="hidden">
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl flex items-center justify-between hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700">Non-Individual</span>
+                                <div class="w-4 h-4 rounded-full border border-slate-300 bg-white"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- VAT Status -->
+                <div class="space-y-3">
+                    <label class="text-sm font-bold text-slate-700 uppercase tracking-wider">VAT Registered?</label>
+                    <div class="grid grid-cols-1 gap-3">
+                        <label class="radio-card cursor-pointer">
+                            <input type="radio" name="vatRegistered" value="yes" data-label="Yes" class="hidden">
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl flex items-center justify-between hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700">Yes</span>
+                                <div class="w-4 h-4 rounded-full border border-slate-300 bg-white"></div>
+                            </div>
+                        </label>
+                        <label class="radio-card cursor-pointer">
+                            <input type="radio" name="vatRegistered" value="no" data-label="No" class="hidden" checked>
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl flex items-center justify-between hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700">No</span>
+                                <div class="w-4 h-4 rounded-full border border-slate-300 bg-white"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 1601-EQ -->
+                <div class="space-y-3 md:col-span-2">
+                    <label class="text-sm font-bold text-slate-700 uppercase tracking-wider block">BIR Form 1601-EQ (Expanded Withholding Tax)</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <label class="radio-card cursor-pointer">
+                            <input type="radio" name="needs1601EQ" value="no" data-label="No" class="hidden" checked>
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl text-center hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700">No</span>
+                            </div>
+                        </label>
+                        <label class="radio-card cursor-pointer">
+                            <input type="radio" name="needs1601EQ" value="rental" data-label="Rental Only" class="hidden">
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl text-center hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700 text-sm">Yes - Rental Only</span>
+                            </div>
+                        </label>
+                        <label class="radio-card cursor-pointer">
+                            <input type="radio" name="needs1601EQ" value="stamp" data-label="TAMP Taxpayer" class="hidden">
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl text-center hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700 text-sm">Yes - TAMP Taxpayer</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 1601-C -->
+                <div class="space-y-3 md:col-span-2">
+                    <label class="text-sm font-bold text-slate-700 uppercase tracking-wider block">BIR Form 1601-C (Withholding on Compensation)</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <label class="radio-card cursor-pointer">
+                            <input type="radio" name="needs1601C" value="no" data-label="No" class="hidden" checked>
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl text-center hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700">No</span>
+                            </div>
+                        </label>
+                        <label class="radio-card cursor-pointer">
+                            <input type="radio" name="needs1601C" value="yes_less_10" data-label="< 10 Employees" class="hidden">
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl text-center hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700 text-sm">< 10 Employees</span>
+                            </div>
+                        </label>
+                        <label class="radio-card cursor-pointer">
+                            <input type="radio" name="needs1601C" value="yes_10_plus" data-label="10+ Employees" class="hidden">
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl text-center hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700 text-sm">10+ Employees</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Outsource Contributions -->
+                <div class="space-y-3 md:col-span-2">
+                    <label class="text-sm font-bold text-slate-700 uppercase tracking-wider">Outsource Government Contributions?</label>
+                    <div class="flex gap-4">
+                        <label class="radio-card cursor-pointer flex-1">
+                            <input type="radio" name="outsourceContributions" value="yes" data-label="Yes" class="hidden">
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl text-center hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700">Yes</span>
+                            </div>
+                        </label>
+                        <label class="radio-card cursor-pointer flex-1">
+                            <input type="radio" name="outsourceContributions" value="no" data-label="No" class="hidden" checked>
+                            <div class="card-content p-4 border-2 border-slate-100 rounded-xl text-center hover:border-blue-200 transition-all">
+                                <span class="font-medium text-slate-700">No</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-10 border-slate-100">
+
+            <!-- Contact Info -->
+            <div class="space-y-6">
+                <h3 class="text-xl font-bold text-slate-800">Your Contact Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="fullName" class="block text-sm font-semibold text-slate-600 mb-2 required-indicator">Full Name</label>
+                        <input type="text" name="fullName" id="fullName" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400" placeholder="Juan Dela Cruz">
+                    </div>
+                    <div>
+                        <label for="contactNumber" class="block text-sm font-semibold text-slate-600 mb-2 required-indicator">Contact Number</label>
+                        <input type="tel" name="contactNumber" id="contactNumber" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400" placeholder="0917xxxxxxx">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="companyName" class="block text-sm font-semibold text-slate-600 mb-2">Company Name (Optional)</label>
+                        <input type="text" name="companyName" id="companyName" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400" placeholder="Acme Corp">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Area -->
+            <div id="quoteResult" class="mt-10 p-6 bg-slate-900 rounded-2xl text-center transform transition-all opacity-0 scale-95 cursor-pointer hover:bg-slate-800 group">
+                <p class="text-blue-400 text-sm font-bold uppercase tracking-widest mb-2">Estimated Monthly Fee</p>
+                <div id="priceDisplay" class="text-3xl md:text-4xl font-bold text-white mb-4">₱0.00</div>
+                <div class="inline-flex items-center text-blue-400 font-semibold group-hover:translate-x-1 transition-transform">
+                    Click to Request Official Proposal
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const quoteForm = document.getElementById('quoteForm');
+            const quoteResultDiv = document.getElementById('quoteResult');
+            const priceDisplay = document.getElementById('priceDisplay');
+            const fullNameInput = document.getElementById('fullName');
+            const companyNameInput = document.getElementById('companyName');
+            const contactNumberInput = document.getElementById('contactNumber');
+
+            let currentQuoteDetails = null;
+            let currentFormattedTotal = "";
+            let quoteGenerated = false;
+
+            function calculateQuote() {
+                let basePrice = 0;
+                let totalPrice = 0;
+                let details = {};
+
+                try {
+                    const clientTypeInput = quoteForm.querySelector('input[name="clientType"]:checked');
+                    details.clientType = clientTypeInput.dataset.label;
+                    const clientTypeValue = clientTypeInput.value;
+
+                    const vatRegisteredInput = quoteForm.querySelector('input[name="vatRegistered"]:checked');
+                    details.vatRegistered = vatRegisteredInput.dataset.label;
+                    const isVatRegistered = vatRegisteredInput.value === 'yes';
+
+                    const eqRequirementInput = quoteForm.querySelector('input[name="needs1601EQ"]:checked');
+                    details.needs1601EQ = eqRequirementInput.dataset.label;
+                    const eqRequirementValue = eqRequirementInput.value;
+
+                    const needs1601CInput = quoteForm.querySelector('input[name="needs1601C"]:checked');
+                    details.needs1601C = needs1601CInput.dataset.label;
+                    const needs1601CValue = needs1601CInput.value;
+
+                    const outsourceContributionsInput = quoteForm.querySelector('input[name="outsourceContributions"]:checked');
+                    details.outsourceContributions = outsourceContributionsInput.dataset.label;
+                    const outsourceContributionsValue = outsourceContributionsInput.value === 'yes';
+
+                    if (clientTypeValue === 'individual') basePrice = 1000;
+                    else basePrice = 2000;
+                    totalPrice += basePrice;
+
+                    if (isVatRegistered) totalPrice += (clientTypeValue === 'individual' ? 1000 : 2000);
+                    if (eqRequirementValue === 'rental') totalPrice += 500;
+                    else if (eqRequirementValue === 'stamp') totalPrice += 1000;
+                    if (needs1601CValue === 'yes_less_10') totalPrice += 500;
+                    else if (needs1601CValue === 'yes_10_plus') totalPrice += 1500;
+                    if (outsourceContributionsValue) totalPrice += 1000;
+
+                    currentQuoteDetails = details;
+                    currentFormattedTotal = totalPrice.toLocaleString('en-PH', { style: 'currency', currency: 'PHP' });
+
+                    priceDisplay.textContent = currentFormattedTotal;
+                    quoteResultDiv.classList.remove('opacity-0', 'scale-95');
+                    quoteResultDiv.classList.add('opacity-100', 'scale-100');
+                    quoteGenerated = true;
+
+                } catch (error) {
+                    console.error("Error calculating quote:", error);
+                }
+            }
+
+            function generateEmailInquiry() {
+                const fullName = fullNameInput.value.trim();
+                const contactNumber = contactNumberInput.value.trim();
+
+                if (!fullName || !contactNumber) {
+                    alert("Please fill in your Full Name and Contact Number.");
+                    if (!fullName) fullNameInput.focus();
+                    else contactNumberInput.focus();
+                    return;
+                }
+
+                const companyName = companyNameInput.value.trim();
+                const recipient = "info@tallocpa.com";
+                const subject = "Service Inquiry - Quote Calculator";
+                let body = `Hello,\n\nI am interested in your Bookkeeping & Tax Compliance service.\n\n`;
+                body += `--- My Contact Information ---\n`;
+                body += `Full Name: ${fullName}\n`;
+                if (companyName) { body += `Company Name: ${companyName}\n`; }
+                body += `Cont
